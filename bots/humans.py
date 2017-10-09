@@ -68,6 +68,11 @@ class Good(Bot):
                     return r[2]
                 if board[r[1]] == board[r[7]] == board[r[5]] == 1 and board[r[3]] == board[r[4]] == 2:
                     return r[0]
+                if board[r[1]] == board[r[3]] == board[r[8]] == 1 and board[r[0]] == board[r[4]] == 2:
+                    return r[6]
+                if board[r[1]] == board[r[4]] == board[r[8]] == 1 and board[r[0]] == board[r[7]] == 2:
+                    return r[3]
+
 
         # 012
         # 345
