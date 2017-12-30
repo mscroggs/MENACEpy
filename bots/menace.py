@@ -19,17 +19,19 @@ def new_box(board, n):
 
 class MENACE(Bot):
     def __init__(self):
+        start = [1,2,3,9]
         self.name = "MENACE"
         self.boxes = {}
-        self.boxes[0] = new_box(Board(),4)
-        self.data = [sum(self.boxes[0])]
+        self.d_boxes = {}
+        self.d_boxes[0] = new_box(Board(),start[3])
+        self.data = [sum(self.d_boxes[0])]
 
         for i,j in permutations(range(9),2):
             board = Board()
             board[i] = 1
             board[j] = 2
-            if board.number() not in self.boxes and board.is_max() and not board.has_winner():
-                self.boxes[board.number()] = new_box(board,3)
+            if board.number() not in self.d_boxes and board.is_max() and not board.has_winner():
+                self.d_boxes[board.number()] = new_box(board,start[2])
 
         for i,j,k,l in permutations(range(9),4):
             board = Board()
@@ -37,8 +39,8 @@ class MENACE(Bot):
             board[j] = 2
             board[k] = 1
             board[l] = 2
-            if board.number() not in self.boxes and board.is_max() and not board.has_winner():
-                self.boxes[board.number()] = new_box(board,2)
+            if board.number() not in self.d_boxes and board.is_max() and not board.has_winner():
+                self.d_boxes[board.number()] = new_box(board,start[1])
 
         for i,j,k,l,m,n in permutations(range(9),6):
             board = Board()
@@ -48,10 +50,17 @@ class MENACE(Bot):
             board[l] = 2
             board[m] = 1
             board[n] = 2
-            if board.number() not in self.boxes and board.is_max() and not board.has_winner():
-                self.boxes[board.number()] = new_box(board,1)
+            if board.number() not in self.d_boxes and board.is_max() and not board.has_winner():
+                self.d_boxes[board.number()] = new_box(board,start[0])
 
-        assert len(self.boxes) == 304
+        assert len(self.d_boxes) == 304
+
+        self.rebuild()
+
+    def rebuild(self):
+        self.boxes = {}
+        for a,b in self.d_boxes.items():
+            self.boxes[a] = [i for i in b]
 
     def play(self, board):
         if board.count(0) == 1:
