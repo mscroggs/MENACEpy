@@ -1,4 +1,4 @@
-from .bot import Bot
+from bots.bot import Bot
 from game import Board
 from random import randrange, choice
 from itertools import permutations
@@ -19,43 +19,35 @@ def new_box(board, n):
 
 class MENACE(Bot):
     def __init__(self):
-        start = [1,2,3,9]
+        self.start = [1,2,3,9]
         self.name = "MENACE"
         self.boxes = {}
         self.d_boxes = {}
-        self.d_boxes[0] = new_box(Board(),start[3])
+        self.d_boxes[0] = new_box(Board(),self.start[3])
         self.data = [sum(self.d_boxes[0])]
 
-        for i,j in permutations(range(9),2):
-            board = Board()
-            board[i] = 1
-            board[j] = 2
-            if board.number() not in self.d_boxes and board.is_max() and not board.has_winner():
-                self.d_boxes[board.number()] = new_box(board,start[2])
-
-        for i,j,k,l in permutations(range(9),4):
-            board = Board()
-            board[i] = 1
-            board[j] = 2
-            board[k] = 1
-            board[l] = 2
-            if board.number() not in self.d_boxes and board.is_max() and not board.has_winner():
-                self.d_boxes[board.number()] = new_box(board,start[1])
-
-        for i,j,k,l,m,n in permutations(range(9),6):
-            board = Board()
-            board[i] = 1
-            board[j] = 2
-            board[k] = 1
-            board[l] = 2
-            board[m] = 1
-            board[n] = 2
-            if board.number() not in self.d_boxes and board.is_max() and not board.has_winner():
-                self.d_boxes[board.number()] = new_box(board,start[0])
-
-        assert len(self.d_boxes) == 304
+        self.search_moves(Board())
 
         self.rebuild()
+
+    def search_moves(self,board):
+        played = 10 - board.count(0)
+        move = 2 - played%2
+        other = 3 - move
+        minmove = 9
+        for i in range(9):
+            if board[i] == move:
+                minmove = i
+                break
+        for i in range(minmove):
+            if board[i]==0:
+                newboard = board.copy()
+                newboard[i] = move
+                if move == 2:
+                    if not newboard.has_winner() and newboard.is_max():
+                        self.d_boxes[newboard.number()] = new_box(newboard,self.start[newboard.count(0)//2-1])
+                if played < 7:
+                    self.search_moves(newboard)
 
     def rebuild(self):
         self.boxes = {}

@@ -1,0 +1,1 @@
+from .menace import MENACE

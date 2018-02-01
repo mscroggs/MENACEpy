@@ -11,8 +11,9 @@ class Board(object):
     def __init__(self, board=None):
         if board is None:
             self.pieces = [0]*9
+            self.reset()
         else:
-            self.pieces = board.pieces
+            self.pieces = [i for i in board.pieces]
         self.rotations = [(0,1,2,3,4,5,6,7,8),
                           (6,3,0,7,4,1,8,5,2),
                           (8,7,6,5,4,3,2,1,0),
@@ -21,7 +22,9 @@ class Board(object):
                           (0,3,6,1,4,7,2,5,8),
                           (6,7,8,3,4,5,0,1,2),
                           (8,5,2,7,4,1,6,3,0)]
-        self.reset()
+
+    def copy(self):
+        return Board(self)
 
     def number(self):
         return board_n(self.pieces)
